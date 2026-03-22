@@ -203,6 +203,8 @@ function buildReviewPrompt(task: ReviewableTask): string {
     '',
     '## Instructions',
     'Evaluate whether the agent\'s response adequately addresses the task.',
+    'CRITICAL: Planning text (I will implement, My goal is, I propose) = REJECT immediately.',
+    'For coding tasks: resolution MUST contain a git commit hash (7+ hex chars). No commit hash = REJECT.',
     'Respond with EXACTLY one of these two formats:',
     '',
     'If the work is acceptable:',
