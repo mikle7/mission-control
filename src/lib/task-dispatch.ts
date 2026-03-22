@@ -13,6 +13,7 @@ interface DispatchableTask {
   assigned_to: string
   workspace_id: number
   agent_name: string
+  context_doc: string | null
   agent_id: number
   agent_config: string | null
   ticket_prefix: string | null
@@ -93,12 +94,25 @@ function buildTaskPrompt(task: DispatchableTask, rejectionFeedback?: string | nu
     ? `${task.ticket_prefix}-${String(task.project_ticket_no).padStart(3, '0')}`
     : `TASK-${task.id}`
 
-  const lines = [
+  const lines: string[] = []
+
+  // Inject project context doc (set via Project Kickoff) so agents have full context
+  if (task.context_doc) {
+    lines.push(
+      '## Project Context',
+      task.context_doc.trim(),
+      '',
+      '---',
+      '',
+    )
+  }
+
+  lines.push(
     'You have been assigned a task in Mission Control.',
     '',
     `**[${ticket}] ${task.title}**`,
     `Priority: ${task.priority}`,
-  ]
+  )
 
   if (task.tags && task.tags.length > 0) {
     lines.push(`Tags: ${task.tags.join(', ')}`)
@@ -370,7 +384,7 @@ export async function dispatchAssignedTasks(): Promise<{ ok: boolean; message: s
 
   const tasks = db.prepare(`
     SELECT t.*, a.name as agent_name, a.id as agent_id, a.config as agent_config,
-           p.ticket_prefix, t.project_ticket_no
+           p.ticket_prefix, t.project_ticket_no, p.context_doc
     FROM tasks t
     JOIN agents a ON a.name = t.assigned_to AND a.workspace_id = t.workspace_id
     LEFT JOIN projects p ON p.id = t.project_id AND p.workspace_id = t.workspace_id
