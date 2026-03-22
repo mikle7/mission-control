@@ -10,6 +10,24 @@ services:
       - openclaw-config:/openclaw-home:ro
       - openclaw-workspace:/openclaw-workspace:ro
 
+  ocv-heartbeat-relay:
+    image: node:22-alpine
+    restart: unless-stopped
+    command: ["node", "/app/heartbeat-relay.js"]
+    extra_hosts:
+      - "host-gateway:host-gateway"
+    environment:
+      MC_URL: "http://192.168.1.32:4000"
+      MC_API_KEY: "${MC_HEARTBEAT_API_KEY}"
+      GW_URL: "http://host-gateway:18789"
+      GW_TOKEN: "${OPENCLAW_GATEWAY_TOKEN}"
+    volumes:
+      - ./heartbeat-relay.js:/app/heartbeat-relay.js:ro
+    depends_on:
+      - mission-control
+    networks:
+      - default
+
 volumes:
   openclaw-config:
     external: true
