@@ -371,9 +371,9 @@ export function initScheduler() {
     running: false,
   })
 
-  tasks.set('aegis_review', {
+  tasks.set("aegis_review", {
     name: 'Aegis Quality Review',
-    intervalMs: TICK_MS, // Every 60s — check for tasks awaiting review
+    intervalMs: 10 * 60 * 1000, // Every 10 minutes — LLM calls are expensive
     lastRun: null,
     nextRun: now + 30_000, // First check 30s after startup (after dispatch)
     enabled: true,

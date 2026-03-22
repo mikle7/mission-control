@@ -62,6 +62,24 @@ async function main() {
     if (!res.ok) die(`HTTP ${res.status}`);
     const data = await res.json();
     const text = data.choices?.[0]?.message?.content ?? "";
+
+    // Report token usage to MC cost tracker (fire-and-forget)
+    const usage = data.usage;
+    if (usage && process.env.MC_API_KEY) {
+      const body = JSON.stringify({
+        model: data.model || "unknown",
+        session_id: idempotencyKey || "proxy-" + Date.now(),
+        agent_name: agentId || "aegis",
+        input_tokens: usage.prompt_tokens || 0,
+        output_tokens: usage.completion_tokens || 0,
+      });
+      fetch(`http://192.168.1.32:4000/api/tokens`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-api-key": process.env.MC_API_KEY },
+        body,
+      }).catch(() => {});
+    }
+
     out({ ok: true, result: text, type: "final" }, text);
     return;
   }
