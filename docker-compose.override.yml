@@ -5,6 +5,7 @@ services:
       OPENCLAW_HOME: "/openclaw-home"
       OPENCLAW_WORKSPACE_DIR: "/openclaw-workspace"
       OPENCLAW_MEMORY_DIR: "/openclaw-workspace/memory"
+      MC_API_KEY: "mca_7b726806604cb6193890487027a1802be14ff4743788f5e2"
     volumes:
       - ./openclaw-proxy.js:/app/openclaw-proxy.js:ro
       - openclaw-config:/openclaw-home:ro
