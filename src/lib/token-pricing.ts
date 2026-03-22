@@ -38,6 +38,17 @@ const MODEL_PRICING: Record<string, ModelPricing> = {
   'ollama/deepseek-r1:14b': { inputPerMTok: 0.0, outputPerMTok: 0.0 },
   'ollama/qwen2.5-coder:7b': { inputPerMTok: 0.0, outputPerMTok: 0.0 },
   'ollama/qwen2.5-coder:14b': { inputPerMTok: 0.0, outputPerMTok: 0.0 },
+  // OpenRouter models (accurate pricing as of 2026-03)
+  "openrouter/google/gemini-2.5-flash": { inputPerMTok: 0.15, outputPerMTok: 0.60 },
+  "openrouter/google/gemini-2.0-flash-001": { inputPerMTok: 0.10, outputPerMTok: 0.40 },
+  "openrouter/google/gemini-2.5-pro": { inputPerMTok: 1.25, outputPerMTok: 10.0 },
+  "google/gemini-2.5-flash": { inputPerMTok: 0.15, outputPerMTok: 0.60 },
+  "gemini-2.5-flash": { inputPerMTok: 0.15, outputPerMTok: 0.60 },
+  "openrouter/openai/gpt-5": { inputPerMTok: 2.0, outputPerMTok: 8.0 },
+  "openrouter/openai/gpt-5-mini": { inputPerMTok: 0.40, outputPerMTok: 1.60 },
+  "openrouter/minimax/minimax-m2.5": { inputPerMTok: 0.30, outputPerMTok: 0.30 },
+  "openrouter/moonshotai/kimi-k2": { inputPerMTok: 1.0, outputPerMTok: 3.0 },
+
 }
 
 function normalizedModelName(modelName: string): string {
