@@ -1,0 +1,19 @@
+services:
+  mission-control:
+    environment:
+      OPENCLAW_BIN: "node /app/openclaw-proxy.js"
+      OPENCLAW_HOME: "/openclaw-home"
+      OPENCLAW_WORKSPACE_DIR: "/openclaw-workspace"
+      OPENCLAW_MEMORY_DIR: "/openclaw-workspace/memory"
+    volumes:
+      - ./openclaw-proxy.js:/app/openclaw-proxy.js:ro
+      - openclaw-config:/openclaw-home:ro
+      - openclaw-workspace:/openclaw-workspace:ro
+
+volumes:
+  openclaw-config:
+    external: true
+    name: openclaw-config
+  openclaw-workspace:
+    external: true
+    name: openclaw-workspace
