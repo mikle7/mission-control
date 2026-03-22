@@ -1,7 +1,7 @@
 services:
   mission-control:
     environment:
-      OPENCLAW_BIN: "node /app/openclaw-proxy.js"
+      OPENCLAW_BIN: "/app/openclaw-proxy.js"
       OPENCLAW_HOME: "/openclaw-home"
       OPENCLAW_WORKSPACE_DIR: "/openclaw-workspace"
       OPENCLAW_MEMORY_DIR: "/openclaw-workspace/memory"
