@@ -86,7 +86,7 @@ async function main() {
     if (healthy) {
       out(
         { ok: true, level: "healthy", healthy: true, issues: [], canFix: false, summary: "No issues detected.", raw: "" },
-        "No warnings detected. OpenClaw configuration is healthy."
+        "All systems operational. Configuration is valid and healthy."
       );
     } else {
       out(

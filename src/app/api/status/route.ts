@@ -269,11 +269,16 @@ async function getSystemStatus(workspaceId: number) {
         status.uptime = Date.now() - parseInt(match[1]) * 1000
       }
     } else {
-      const { stdout } = await runCommand('uptime', ['-s'], {
-        timeoutMs: 3000
-      })
-      const bootTime = new Date(stdout.trim())
-      status.uptime = Date.now() - bootTime.getTime()
+      // Use /proc/uptime (available in all Linux containers without extra binaries)
+      try {
+        const { readFileSync } = await import('fs')
+        const raw = readFileSync('/proc/uptime', 'utf8')
+        const uptimeSecs = parseFloat(raw.split(' ')[0])
+        status.uptime = Math.floor(uptimeSecs * 1000)
+      } catch {
+        // Fall back to process uptime if /proc/uptime unavailable
+        status.uptime = Math.floor(process.uptime() * 1000)
+      }
     }
   } catch (error) {
     logger.error({ err: error }, 'Error getting uptime')
