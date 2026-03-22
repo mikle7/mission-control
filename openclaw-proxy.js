@@ -68,10 +68,10 @@ async function main() {
     if (usage && process.env.MC_API_KEY) {
       const body = JSON.stringify({
         model: data.model || "unknown",
-        session_id: idempotencyKey || "proxy-" + Date.now(),
-        agent_name: agentId || "aegis",
-        input_tokens: usage.prompt_tokens || 0,
-        output_tokens: usage.completion_tokens || 0,
+        sessionId: idempotencyKey || "proxy-" + Date.now(),
+        agentName: agentId || "aegis",
+        inputTokens: usage.prompt_tokens || 0,
+        outputTokens: usage.completion_tokens || 0,
       });
       fetch(`http://192.168.1.32:4000/api/tokens`, {
         method: "POST",
