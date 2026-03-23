@@ -431,7 +431,7 @@ export async function runAegisReviews(): Promise<{ ok: boolean; message: string 
           id: task.id, title: task.title, description: task.description,
           status: 'quality_review', priority: 'high', assigned_to: 'aegis',
           workspace_id: task.workspace_id, agent_name: 'aegis', agent_id: 0,
-          agent_config: null, ticket_prefix: task.ticket_prefix,
+          agent_config: null, context_doc: null, ticket_prefix: task.ticket_prefix,
           project_ticket_no: task.project_ticket_no, project_id: null,
         }
         agentResponse = await callClaudeDirectly(reviewTask, prompt)

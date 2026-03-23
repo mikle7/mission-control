@@ -52,6 +52,7 @@ const menuItems: MenuItem[] = [
   { id: 'activity', label: 'Activity Feed', icon: '📣', description: 'Real-time activity stream' },
   { id: 'notifications', label: 'Notifications', icon: '🔔', description: 'Mentions & alerts' },
   { id: 'standup', label: 'Daily Standup', icon: '📈', description: 'Generate standup reports' },
+  { id: 'planning', label: 'Plan Project', icon: '✨', description: 'Conversational project planning' },
   { id: 'spawn', label: 'Spawn Agent', icon: '🚀', description: 'Launch new sub-agents' },
   { id: 'logs', label: 'Logs', icon: '📝', description: 'Real-time log viewer' },
   { id: 'cron', label: 'Cron Jobs', icon: '⏰', description: 'Automated tasks' },

@@ -31,6 +31,7 @@ const navGroups: NavGroup[] = [
       { id: 'overview', label: 'Overview', icon: <OverviewIcon />, priority: true, essential: true },
       { id: 'agents', label: 'Agents', icon: <AgentsIcon />, priority: true, essential: true },
       { id: 'tasks', label: 'Tasks', icon: <TasksIcon />, priority: true, essential: true },
+      { id: 'planning', label: 'Plan', icon: <PlanIcon />, priority: false, essential: true },
       { id: 'chat', label: 'Chat', icon: <ChatIcon />, priority: false, essential: true },
       { id: 'channels', label: 'Channels', icon: <ChannelsIcon />, priority: false },
       { id: 'skills', label: 'Skills', icon: <SkillsIcon />, priority: false },
@@ -86,6 +87,7 @@ const navItemTranslationKeys: Record<string, string> = {
   overview: 'overview',
   agents: 'agents',
   tasks: 'tasks',
+  planning: 'planning',
   chat: 'chat',
   channels: 'channels',
   skills: 'skills',
@@ -1508,6 +1510,15 @@ function MonitorIcon() {
       <rect x="1" y="2" width="14" height="10" rx="1.5" />
       <polyline points="4,9 6,6 8,8 12,4" />
       <path d="M5 14h6" />
+    </svg>
+  )
+}
+
+function PlanIcon() {
+  return (
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M2 2h5v5H2zM9 2h5v5H9zM2 9h5v5H2z" />
+      <path d="M11.5 10v4M9.5 12h4" />
     </svg>
   )
 }
