@@ -6,6 +6,7 @@ services:
       OPENCLAW_WORKSPACE_DIR: "/openclaw-workspace"
       OPENCLAW_MEMORY_DIR: "/openclaw-workspace/memory"
       MC_API_KEY: "mca_7b726806604cb6193890487027a1802be14ff4743788f5e2"
+      MC_ALLOWED_HOSTS: "localhost,127.0.0.1,192.168.1.32,mc.michaelbell.dev"
     volumes:
       - ./openclaw-proxy.js:/app/openclaw-proxy.js:ro
       - openclaw-config:/openclaw-home:ro

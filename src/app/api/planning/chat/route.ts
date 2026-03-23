@@ -19,6 +19,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     const messages: Array<{ role: string; content: string }> = body?.messages
+    const projectContext: string | undefined = body?.projectContext
     if (!Array.isArray(messages) || messages.length === 0) {
       return new Response(JSON.stringify({ error: 'messages array is required' }), {
         status: 400,
@@ -29,7 +30,7 @@ export async function POST(request: NextRequest) {
     const payload = {
       model: MODEL,
       messages: [
-        { role: 'system', content: PLANNER_SYSTEM_PROMPT },
+        { role: 'system', content: projectContext ? PLANNER_SYSTEM_PROMPT + '\n\n## Existing Project Context\nThe user is adding to an existing project. Skip the full project kickoff (tech stack, requirements phases). Focus on understanding what they want to add/change, ask clarifying questions, then break it into implementable tasks.\n\n' + projectContext : PLANNER_SYSTEM_PROMPT },
         ...messages,
       ],
       max_tokens: 8192,

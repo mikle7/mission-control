@@ -89,14 +89,15 @@ function parseMessageContent(content: string): { text: string; options: OptionsB
 
 // ── Sub-components ─────────────────────────────────────────────────
 
-function EmptyState(): React.ReactElement {
+function EmptyState({ projectName }: { projectName?: string }): React.ReactElement {
   return (
     <div className="flex flex-col items-center justify-center h-full text-center">
       <div className="text-4xl mb-4">🏗️</div>
       <h3 className="text-lg font-medium text-foreground mb-2">Planning Wizard</h3>
       <p className="text-sm text-muted-foreground max-w-md">
-        Describe what you want to build. The planner will ask questions to refine your idea,
-        then generate requirements, tech stack decisions, and actionable tasks.
+        {projectName
+          ? `Adding to "${projectName}". Describe what you want to add or change.`
+          : "Describe what you want to build. The planner will ask questions to refine your idea, then generate requirements, tech stack decisions, and actionable tasks."}
       </p>
     </div>
   )
@@ -282,6 +283,8 @@ function MessageBubble({
 // ── Main Component ─────────────────────────────────────────────────
 
 export function PlanningWizardPanel(): React.ReactElement {
+  const [projects, setProjects] = useState<Array<{id: number; name: string; context_doc: string | null}>>([])
+  const [selectedProjectId, setSelectedProjectId] = useState<number | null>(null)
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [input, setInput] = useState('')
   const [isStreaming, setIsStreaming] = useState(false)
@@ -292,6 +295,9 @@ export function PlanningWizardPanel(): React.ReactElement {
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const navigateToPanel = useNavigateToPanel()
 
+  useEffect(() => { fetch('/api/projects').then(r => r.json()).then(data => { if (data?.projects) setProjects(data.projects) }).catch(() => {}) }, [])
+
+  const selectedProject = projects.find(p => p.id === selectedProjectId) ?? null
   const phase = detectPhase(messages)
   const planningResult = phase === 'complete' ? extractPlanningResult(messages) : null
 
@@ -327,6 +333,7 @@ export function PlanningWizardPanel(): React.ReactElement {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           messages: newMessages.map((m) => ({ role: m.role, content: m.content })),
+          ...(selectedProject?.context_doc ? { projectContext: selectedProject.context_doc } : {}),
         }),
       })
 
@@ -414,7 +421,7 @@ export function PlanningWizardPanel(): React.ReactElement {
       const res = await fetch('/api/planning/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ planningResult }),
+        body: JSON.stringify({ planningResult, projectId: selectedProjectId }),
       })
 
       if (!res.ok) {
@@ -438,6 +445,18 @@ export function PlanningWizardPanel(): React.ReactElement {
       <div className="flex-shrink-0 border-b border-border bg-card px-4 py-3">
         <div className="flex items-center justify-between mb-2">
           <h2 className="text-lg font-semibold text-foreground">Plan a Project</h2>
+          {messages.length === 0 && projects.length > 0 ? (
+            <select
+              value={selectedProjectId ?? ""}
+              onChange={(e) => setSelectedProjectId(e.target.value ? Number(e.target.value) : null)}
+              className="ml-3 bg-secondary text-foreground text-xs rounded px-2 py-1 border border-border"
+            >
+              <option value="">New Project</option>
+              {projects.map((p) => (
+                <option key={p.id} value={p.id}>{p.name}</option>
+              ))}
+            </select>
+          ) : null}
           {createResult != null ? (
             <Button variant="ghost" size="sm" onClick={() => navigateToPanel('tasks')}>
               View Tasks →
@@ -449,7 +468,7 @@ export function PlanningWizardPanel(): React.ReactElement {
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
-        {messages.length === 0 ? <EmptyState /> : null}
+        {messages.length === 0 ? <EmptyState projectName={selectedProject?.name} /> : null}
 
         {messages.map((msg, i) => (
           <MessageBubble
@@ -522,7 +541,7 @@ export function PlanningWizardPanel(): React.ReactElement {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={messages.length === 0 ? 'Describe what you want to build...' : 'Type your response...'}
+            placeholder={messages.length === 0 ? (selectedProject ? 'Describe what you want to add or change...' : 'Describe what you want to build...') : 'Type your response...'}
             rows={1}
             disabled={isStreaming}
             className="flex-1 bg-secondary text-foreground placeholder-muted-foreground rounded-lg px-4 py-2.5 text-sm resize-none border border-border focus:outline-none focus:ring-1 focus:ring-emerald-500/50 disabled:opacity-50"

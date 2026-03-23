@@ -64,6 +64,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     const planningResult: PlanningResult = body?.planningResult
+    const existingProjectId: number | undefined = body?.projectId
     if (!planningResult?.project?.name || !Array.isArray(planningResult.tasks)) {
       return NextResponse.json(
         { error: 'Invalid planning result: requires project.name and tasks array' },
@@ -94,7 +95,15 @@ export async function POST(request: NextRequest) {
 
     let projectId: number
 
-    if (existing) {
+    if (existingProjectId) {
+      // Use the explicitly provided project ID
+      projectId = existingProjectId
+      if (contextDoc) {
+        db.prepare(
+          'UPDATE projects SET context_doc = ?, updated_at = unixepoch() WHERE id = ? AND workspace_id = ?'
+        ).run(contextDoc, projectId, workspaceId)
+      }
+    } else if (existing) {
       // Update existing project with context_doc
       projectId = existing.id
       if (contextDoc) {
